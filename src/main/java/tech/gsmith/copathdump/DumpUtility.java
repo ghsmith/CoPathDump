@@ -36,7 +36,7 @@ public class DumpUtility {
             "select "
           + "  (select universal_mednum_stripped from dbo.r_pat_demograph pd where patdemog_id = s.patdemog_id) as empi, "
           + "  (select abbr from dbo.c_d_client where id = s.client_id) as mrn_facility, "
-          + "  (select medrec_num_stripped from dbo.r_medrec where client_id = s.client_id and patdemog_id = s.patdemog_id) as mrn, "
+          + "  (select max(medrec_num_stripped) from dbo.r_medrec where client_id = s.client_id and patdemog_id = s.patdemog_id) as mrn, "
           + "  s.specnum_formatted as accession_no, "
           + "  p.part_designator as part_designator, "
           + "  dp.abbr as part_type, "
@@ -53,7 +53,8 @@ public class DumpUtility {
           + "  dsv.fillin_type as val_freetext_type, "
           + "  ssd.fillin_char as val_freetext_char, "
           + "  ssd.fillin_number as val_freetext_number, "
-          + "  dsv.snomed_id as snomed_id "
+          + "  dsv.snomed_id as snomed_id, "
+          + "  (select count(*) from dbo.r_medrec where client_id = s.client_id and patdemog_id = s.patdemog_id) as mrn_count "
           + "from "
           + "  dbo.c_specimen s "
           + "  join dbo.p_part p on(p.specimen_id = s.specimen_id) "
@@ -133,6 +134,7 @@ public class DumpUtility {
                     patient.getCase().add(case_);
                     case_.setAccessionNumber(rs.getString("accession_no"));
                     case_.setMrn(rs.getString("mrn_facility") + "_" + rs.getString("mrn"));
+                    case_.setMrnCount(rs.getInt("mrn_count"));
                 }
                 
                 if(casePart == null || !rs.getString("part_designator").equals(casePart.getDesignator())) {

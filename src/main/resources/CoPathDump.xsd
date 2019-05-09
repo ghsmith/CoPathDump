@@ -49,6 +49,7 @@
                                                          </xs:sequence>
                                                          <xs:attribute name="accessionNumber" type="xs:string"></xs:attribute>
                                                          <xs:attribute name="mrn" type="xs:string"></xs:attribute>                                                         
+                                                         <xs:attribute name="mrnCount" type="xs:int"></xs:attribute>                                                         
                                                    </xs:complexType>
                                              </xs:element>
                                        </xs:sequence>
