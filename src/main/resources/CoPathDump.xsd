@@ -2,38 +2,21 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
   <xs:element name="CoPathDump">
     <xs:complexType>
-      <xs:attribute name="dumpDate" type="xs:string"/>
-      <xs:attribute name="version" type="xs:string"/>
       <xs:sequence>
         <xs:element name="Patient" maxOccurs="unbounded">
           <xs:complexType>
-            <xs:attribute name="empi" type="xs:string"/>
-            <xs:attribute name="sourceRecord" type="xs:string"/>
             <xs:sequence>
               <xs:element name="Case" maxOccurs="unbounded">
                 <xs:complexType>
-                  <xs:attribute name="accessionNumber" type="xs:string"/>
-                  <xs:attribute name="mrn" type="xs:string"/>
-                  <xs:attribute name="mrnCount" type="xs:int"/>
                   <xs:sequence>
                     <xs:element name="CasePart" maxOccurs="unbounded">
                       <xs:complexType>
-                        <xs:attribute name="designator" type="xs:string"/>
-                        <xs:attribute name="partType" type="xs:string"/>
-                        <xs:attribute name="partTypeDisp" type="xs:string"/>
-                        <xs:attribute name="description" type="xs:string"/>
                         <xs:sequence>
                           <xs:element name="CasePartSynopticReport" maxOccurs="unbounded">
                             <xs:complexType>
-                              <xs:attribute name="srName" type="xs:string"/>
-                              <xs:attribute name="srNameDisp" type="xs:string"/>
-                              <xs:attribute name="srVersion" type="xs:string"/>
                               <xs:sequence>
                                 <xs:element name="CPSRItem" maxOccurs="unbounded">
                                   <xs:complexType>
-                                    <xs:attribute name="number" type="xs:int"/>
-                                    <xs:attribute name="itemName" type="xs:string"/>
-                                    <xs:attribute name="itemNameDisp" type="xs:string"/>
                                     <xs:sequence>
                                       <xs:element name="CPSRItemValue" maxOccurs="unbounded">
                                         <xs:complexType>
@@ -47,21 +30,38 @@
                                         </xs:complexType>
                                       </xs:element>
                                     </xs:sequence>
+                                    <xs:attribute name="number" type="xs:int"/>
+                                    <xs:attribute name="itemName" type="xs:string"/>
+                                    <xs:attribute name="itemNameDisp" type="xs:string"/>
                                   </xs:complexType>
                                 </xs:element>
                               </xs:sequence>
+                              <xs:attribute name="srName" type="xs:string"/>
+                              <xs:attribute name="srNameDisp" type="xs:string"/>
+                              <xs:attribute name="srVersion" type="xs:string"/>
                             </xs:complexType>
                           </xs:element>
                         </xs:sequence>
+                        <xs:attribute name="designator" type="xs:string"/>
+                        <xs:attribute name="partType" type="xs:string"/>
+                        <xs:attribute name="partTypeDisp" type="xs:string"/>
+                        <xs:attribute name="description" type="xs:string"/>
                       </xs:complexType>
                     </xs:element>
                   </xs:sequence>
+                  <xs:attribute name="accessionNumber" type="xs:string"/>
+                  <xs:attribute name="mrn" type="xs:string"/>
+                  <xs:attribute name="mrnCount" type="xs:int"/>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
+            <xs:attribute name="empi" type="xs:string"/>
+            <xs:attribute name="sourceRecord" type="xs:string"/>
           </xs:complexType>
         </xs:element>
       </xs:sequence>
+      <xs:attribute name="dumpDate" type="xs:string"/>
+      <xs:attribute name="version" type="xs:string"/>
     </xs:complexType>
   </xs:element>
 </xs:schema>
