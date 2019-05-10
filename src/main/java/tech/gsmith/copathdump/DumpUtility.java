@@ -54,7 +54,8 @@ public class DumpUtility {
           + "  ssd.fillin_char as val_freetext_char, "
           + "  ssd.fillin_number as val_freetext_number, "
           + "  dsv.snomed_id as snomed_id, "
-          + "  (select count(*) from dbo.r_medrec where client_id = s.client_id and patdemog_id = s.patdemog_id) as mrn_count "
+          + "  (select count(*) from dbo.r_medrec where client_id = s.client_id and patdemog_id = s.patdemog_id) as mrn_count, "
+          + "  (select text_data from dbo.c_spec_text where specimen_id = s.specimen_id and texttype_id = '$final') as final_text "
           + "from "
           + "  dbo.c_specimen s "
           + "  join dbo.p_part p on(p.specimen_id = s.specimen_id) "
@@ -135,6 +136,15 @@ public class DumpUtility {
                     case_.setAccessionNumber(rs.getString("accession_no"));
                     case_.setMrn(rs.getString("mrn_facility") + "_" + rs.getString("mrn"));
                     case_.setMrnCount(rs.getInt("mrn_count"));
+                    case_.setFinalText(
+                        rs.getString("final_text") != null
+                        ? "\n" + rs.getString("final_text")
+                            .replace("\u0008", "") // there are ASCII 08 (backspace?) characters in this column
+                            .replace("\r", "")
+                            .replaceAll("\\s+$","")
+                        + "\n"
+                        : null
+                    );
                 }
                 
                 if(casePart == null || !rs.getString("part_designator").equals(casePart.getDesignator())) {
