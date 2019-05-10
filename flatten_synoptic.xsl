@@ -6,18 +6,25 @@
   Excel: sed 's/\xB6/""/g'.
 -->
 
+<!--
+  Adds plus sign (+) to beginning of every row. Use
+  grep to remove lines that don't start with + from
+  xsltproc output (xsltproc is confused by multi-line
+  elements?): grep -e "^+".
+-->
+
 <xsl:output method="text" encoding="iso-8859-1"/>
 
 <xsl:strip-space elements="*"/>
 
 <xsl:template match="/">
-  <xsl:text>Pt-SourceNumber, Pt-SourceMrn, Pt-EMPI, Case-MRN, Case-AccessionNumber, Part-Designator, Part-Type, Part-TypeDisp, Part-Descr, SR-Name, SR-NameDisp, SR-Version, Item-Number, Item-Name, Item-NameDisp, Value-Name, Value-NameDisp, Value-FreeText, Value-SNOMEDConceptId&#xa;</xsl:text>
+  <xsl:text>+Pt-SourceNumber, Pt-SourceMrn, Pt-EMPI, Case-MRN, Case-AccessionNumber, Part-Designator, Part-Type, Part-TypeDisp, Part-Descr, SR-Name, SR-NameDisp, SR-Version, Item-Number, Item-Name, Item-NameDisp, Value-Name, Value-NameDisp, Value-FreeText, Value-SNOMEDConceptId&#xa;</xsl:text>
   <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="/CoPathDump/Patient/Case/CasePart">
   <xsl:for-each select=".">
-    <xsl:value-of select="../../@sourceRecord"/>
+    <xsl:text>+</xsl:text><xsl:value-of select="../../@sourceRecord"/>
     <xsl:text>,</xsl:text><xsl:value-of select="../../@empi"/>
     <xsl:text>,</xsl:text><xsl:value-of select="../@mrn"/>
     <xsl:text>,</xsl:text><xsl:value-of select="../@accessionNumber"/>
@@ -30,7 +37,7 @@
     </xsl:if>
     <xsl:for-each select="CasePartSynopticReport/CPSRItem/CPSRItemValue">
       <xsl:if test="position() > 1">
-        <xsl:value-of select="../../../../../@sourceRecord"/>
+        <xsl:text>+</xsl:text><xsl:value-of select="../../../../../@sourceRecord"/>
         <xsl:text>,</xsl:text><xsl:value-of select="../../../../../@empi"/>
         <xsl:text>,</xsl:text><xsl:value-of select="../../../../@mrn"/>
         <xsl:text>,</xsl:text><xsl:value-of select="../../../../@accessionNumber"/>
