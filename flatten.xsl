@@ -3,7 +3,7 @@
 <!-- 
   Converts quotation marks to &#182; (paragraph mark).
   Pipe through sed to get quotation marks escaped for
-  Excel: sed 's/\xB6/""/g'
+  Excel: sed 's/\xB6/""/g'.
 -->
 
 <xsl:output method="text" encoding="iso-8859-1"/>
