@@ -41,6 +41,7 @@
                               <xs:attribute name="srVersion" type="xs:string"/>
                             </xs:complexType>
                           </xs:element>
+                          <xs:element name="PartFinalText" maxOccurs="1" type="xs:string"/>
                         </xs:sequence>
                         <xs:attribute name="designator" type="xs:string"/>
                         <xs:attribute name="partType" type="xs:string"/>
@@ -48,7 +49,7 @@
                         <xs:attribute name="description" type="xs:string"/>
                       </xs:complexType>
                     </xs:element>
-                    <xs:element name="FinalText" maxOccurs="1" type="xs:string"/>
+                    <xs:element name="CaseFinalText" maxOccurs="1" type="xs:string"/>
                   </xs:sequence>
                   <xs:attribute name="accessionNumber" type="xs:string"/>
                   <xs:attribute name="mrn" type="xs:string"/>

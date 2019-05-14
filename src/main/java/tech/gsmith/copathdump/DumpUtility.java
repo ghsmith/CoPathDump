@@ -3,12 +3,16 @@ package tech.gsmith.copathdump;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.bind.JAXBContext;
@@ -136,7 +140,7 @@ public class DumpUtility {
                     case_.setAccessionNumber(rs.getString("accession_no"));
                     case_.setMrn(rs.getString("mrn_facility") + "_" + rs.getString("mrn"));
                     case_.setMrnCount(rs.getInt("mrn_count"));
-                    case_.setFinalText(
+                    case_.setCaseFinalText(
                         rs.getString("final_text") != null
                         ? "\n" + rs.getString("final_text")
                             .replace("\u0008", "") // there are ASCII 08 (backspace?) characters in this column
@@ -157,6 +161,18 @@ public class DumpUtility {
                     casePart.setPartType(rs.getString("part_type"));
                     casePart.setPartTypeDisp(rs.getString("part_type_name"));
                     casePart.setDescription(rs.getString("part_description"));
+                    if(rs.getString("final_text") != null) {
+                        String finalDxPart = getFinalDxByParts(rs.getString("final_text")).get(rs.getString("part_designator"));
+                        casePart.setPartFinalText(
+                            finalDxPart != null
+                            ? "\n" + finalDxPart
+                                .replace("\u0008", "") // there are ASCII 08 (backspace?) characters in this column
+                                .replace("\r", "")
+                                .replaceAll("\\s+$","")
+                            + "\n"
+                            : null
+                        );
+                    }
                 }
                 
                 if(rs.getString("worksheet") != null) {
@@ -199,6 +215,17 @@ public class DumpUtility {
         
         pstmt.close();
         conn.close();
+
+        // if there is only one part, just set the part dx to the entire dx
+        {
+            for(Patient patient : coPathDump.getPatient()) {
+                for(Case case_ : patient.getCase()) {
+                    if(case_.getCasePart().size() == 1) {
+                        case_.getCasePart().get(0).setPartFinalText(case_.getCaseFinalText());
+                    }
+                }
+            }
+        }
         
         {
             JAXBContext jc = JAXBContext.newInstance(new Class[] {CoPathDump.class});
@@ -209,4 +236,42 @@ public class DumpUtility {
 
     }
         
+    public static Map<String, String> getFinalDxByParts(String finalDx) throws IOException {
+        
+        Map<String, String> finalDxByParts = new HashMap<>();
+        
+        BufferedReader finalDxReader = new BufferedReader(new StringReader(finalDx));
+        String partDesignator = null;
+        StringBuffer finalDxPart = null;
+        String finalDxLine;
+        Pattern patternFinalDx = Pattern.compile("^\\s*([A-Za-z])\\..*$");
+        
+        while ((finalDxLine = finalDxReader.readLine()) != null) {        
+            
+            Matcher matcherFinalDx = patternFinalDx.matcher(finalDxLine);
+            
+            if(matcherFinalDx.matches()) {
+                if(partDesignator != null) {
+                    finalDxByParts.put(partDesignator, finalDxPart.toString());
+                }
+                partDesignator = matcherFinalDx.group(1).toUpperCase();
+                finalDxPart = new StringBuffer();
+                finalDxPart.append(finalDxLine + "\n");
+            }
+            else {
+                if(partDesignator != null) {
+                    finalDxPart.append(finalDxLine + "\n");
+                }
+            }
+            
+        }
+
+        if(partDesignator != null) {
+            finalDxByParts.put(partDesignator, finalDxPart.toString());
+        }
+        
+        return finalDxByParts;
+        
+    }
+    
 }
