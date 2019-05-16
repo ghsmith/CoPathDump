@@ -6,13 +6,6 @@
   Excel: sed 's/\xB6/""/g'.
 -->
 
-<!--
-  Adds plus sign (+) to beginning of every row. Use
-  grep to remove lines that don't start with + from
-  xsltproc output (xsltproc is confused by multi-line
-  elements?): grep -e "^+".
--->
-
 <xsl:output method="text" encoding="iso-8859-1"/>
 
 <xsl:strip-space elements="*"/>
@@ -59,6 +52,9 @@
       <xsl:text>&#xa;</xsl:text>
     </xsl:for-each>
   </xsl:for-each>
+</xsl:template>
+
+<xsl:template match="/CoPathDump/Patient/Case/CaseFinalText">
 </xsl:template>
 
 </xsl:stylesheet>

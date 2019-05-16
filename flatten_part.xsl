@@ -6,19 +6,12 @@
   Excel: sed 's/\xB6/""/g'.
 -->
 
-<!-- 
-  Adds plus sign (+) to beginning of every row. Use
-  grep to remove lines that don't start with + from
-  xsltproc output (xsltproc is confused by multi-line
-  elements?): grep -e "^+".
--->
-
 <xsl:output method="text" encoding="iso-8859-1"/>
 
 <xsl:strip-space elements="*"/>
 
 <xsl:template match="/">
-  <xsl:text>+Pt-SourceNumber, Pt-SourceMrn, Pt-EMPI, Case-MRN, Case-AccessionNumber, Part-Designator, Part-Type, Part-TypeDisp, Part-Descr&#xa;</xsl:text>
+  <xsl:text>+Pt-SourceNumber, Pt-SourceMrn, Pt-EMPI, Case-MRN, Case-AccessionNumber, Part-Designator, Part-Type, Part-TypeDisp, Part-Descr, Part-FinalText&#xa;</xsl:text>
   <xsl:apply-templates/>
 </xsl:template>
 
@@ -32,8 +25,12 @@
     <xsl:text>,</xsl:text><xsl:value-of select="@partType"/>
     <xsl:text>,"</xsl:text><xsl:value-of select="translate(@partTypeDisp, '&quot;', '&#182;')"/><xsl:text>"</xsl:text>
     <xsl:text>,"</xsl:text><xsl:value-of select="translate(@description, '&quot;', '&#182;')"/><xsl:text>"</xsl:text>
+    <xsl:text>,"</xsl:text><xsl:value-of select="translate(PartFinalText, '&quot;&#183;&#160;', '&#182;  ')"/><xsl:text>"</xsl:text>
     <xsl:text>&#xa;</xsl:text>
   </xsl:for-each>
+</xsl:template>
+
+<xsl:template match="/CoPathDump/Patient/Case/CaseFinalText">
 </xsl:template>
 
 </xsl:stylesheet>
