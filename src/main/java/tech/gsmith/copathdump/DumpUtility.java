@@ -142,11 +142,10 @@ public class DumpUtility {
                     case_.setMrnCount(rs.getInt("mrn_count"));
                     case_.setCaseFinalText(
                         rs.getString("final_text") != null
-                        ? "\n" + rs.getString("final_text")
+                        ? rs.getString("final_text")
                             .replace("\u0008", "") // there are ASCII 08 (backspace?) characters in this column
                             .replace("\r", "")
                             .replaceAll("\\s+$","")
-                        + "\n"
                         : null
                     );
                 }
@@ -165,11 +164,10 @@ public class DumpUtility {
                         String finalDxPart = getFinalDxByParts(rs.getString("final_text")).get(rs.getString("part_designator"));
                         casePart.setPartFinalText(
                             finalDxPart != null
-                            ? "\n" + finalDxPart
+                            ? finalDxPart
                                 .replace("\u0008", "") // there are ASCII 08 (backspace?) characters in this column
                                 .replace("\r", "")
                                 .replaceAll("\\s+$","")
-                            + "\n"
                             : null
                         );
                     }
@@ -216,12 +214,37 @@ public class DumpUtility {
         pstmt.close();
         conn.close();
 
-        // if there is only one part, just set the part dx to the entire dx
+        // fix-ups:
+        // 1. if there is only one part, just set the part dx to the entire dx
+        // 2. strip leading/trailing newline(s) from narratives
+        // 3. add ONE leading and ONE trailing newline to narratives
         {
             for(Patient patient : coPathDump.getPatient()) {
                 for(Case case_ : patient.getCase()) {
+                    if(case_.getCaseFinalText() != null) {
+                        while(case_.getCaseFinalText().length() > 0 && case_.getCaseFinalText().startsWith("\n")) {
+                            case_.setCaseFinalText(case_.getCaseFinalText().substring(1));
+                        }
+                        while(case_.getCaseFinalText().length() > 0 && case_.getCaseFinalText().endsWith("\n")) {
+                            case_.setCaseFinalText(case_.getCaseFinalText().substring(0, case_.getCaseFinalText().length() - 1));
+                        }
+                        case_.setCaseFinalText("\n" + case_.getCaseFinalText() + "\n");
+                    }
                     if(case_.getCasePart().size() == 1) {
                         case_.getCasePart().get(0).setPartFinalText(case_.getCaseFinalText());
+                    }
+                    else {
+                        for(CasePart casePart : case_.getCasePart()) {
+                            if(casePart.getPartFinalText() != null) {
+                                while(casePart.getPartFinalText().length() > 0 && casePart.getPartFinalText().startsWith("\n")) {
+                                    casePart.setPartFinalText(casePart.getPartFinalText().substring(1));
+                                }
+                                while(casePart.getPartFinalText().length() > 0 && casePart.getPartFinalText().endsWith("\n")) {
+                                    casePart.setPartFinalText(casePart.getPartFinalText().substring(0, casePart.getPartFinalText().length() - 1));
+                                }
+                                casePart.setPartFinalText("\n" + casePart.getPartFinalText() + "\n");
+                            }
+                        }
                     }
                 }
             }
