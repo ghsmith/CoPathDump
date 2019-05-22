@@ -29,7 +29,7 @@ import tech.gsmith.copathdump.data.generated.CoPathDump.Patient.Case.CasePart.Ca
  *
  * @author Geoffrey H. Smith
  */
-public class DumpUtility {
+public class DumpUtilityCase {
     
     public static void main(String[] args) throws Exception {
 
