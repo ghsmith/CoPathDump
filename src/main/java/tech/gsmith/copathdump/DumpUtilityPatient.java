@@ -24,7 +24,7 @@ public class DumpUtilityPatient {
     
     public static void main(String[] args) throws Exception {
 
-        Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+        /*Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
         Connection conn = DriverManager.getConnection(args[0]);
         
         PreparedStatement pstmt = conn.prepareStatement(
@@ -35,8 +35,44 @@ public class DumpUtilityPatient {
           + "where "
           + "  dc.abbr = ? "
           + "  and m.medrec_num_stripped = ? "
-        );
+        );*/
 
+        Class.forName("oracle.jdbc.driver.OracleDriver");
+        Connection conn = DriverManager.getConnection(args[0], args[1], args[2]);
+
+        PreparedStatement pstmt = conn.prepareStatement(
+            "select "
+          + "  alias empi "
+          + "from "
+          + "  hnamdwh.person_alias "
+          + "where "
+          + "  alias_pool_cd = 667191 "
+          + "  and active_ind = 1 "
+          + "  and active_status_cd = 188 "
+          + "  and data_status_cd = 25 "
+          + "  and person_id in "
+          + "  ( "
+          + "    select "
+          + "      person_id "
+          + "    from "
+          + "      hnamdwh.person_alias "
+          + "    where "
+          + "      alias_pool_cd = decode "
+          + "      ( "
+          + "        ?, "
+          + "        'EUH', 667193, "
+          + "        'EUHM', 667206, "
+          + "        'TEC', 667211, "
+          + "        'EJCH', 455595002, "
+          + "        'SJH', 455595650 "
+          + "      ) "
+          + "      and alias = ? "
+          + "      and active_ind = 1 "
+          + "      and active_status_cd = 188 "
+          + "      and data_status_cd = 25 "
+          + "  ) "
+        );
+        
         CoPathDump coPathDump = new CoPathDump();
         coPathDump.setDumpDate((new Date()).toString());
         coPathDump.setVersion("0.1");
@@ -90,7 +126,7 @@ public class DumpUtilityPatient {
             JAXBContext jc = JAXBContext.newInstance(new Class[] {CoPathDump.class});
             Marshaller m = jc.createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, new Boolean(true));
-            m.marshal(coPathDump, new FileOutputStream(new File("copathdump" + (args.length >= 2 && args[1] != null && args[1].length() > 0 ? args[1] : "") + ".xml")));
+            m.marshal(coPathDump, new FileOutputStream(new File("copathdump.xml")));
         }
 
     }
