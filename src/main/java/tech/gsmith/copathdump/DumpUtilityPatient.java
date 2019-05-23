@@ -71,6 +71,8 @@ public class DumpUtilityPatient {
           + "      and active_status_cd = 188 "
           + "      and data_status_cd = 25 "
           + "  ) "
+          + "order by "
+          + "  1 "
         );
         
         CoPathDump coPathDump = new CoPathDump();
@@ -98,7 +100,9 @@ public class DumpUtilityPatient {
             pstmt.setString(1, "ECLH".equals(matcherFacilityMrnCsv.group(2)) ? "EUHM" : matcherFacilityMrnCsv.group(2));
             pstmt.setString(2, matcherFacilityMrnCsv.group(3));
 
-            Patient patient = null;
+            Patient patient = new Patient();
+            coPathDump.getPatient().add(patient);
+            patient.setSourceRecord(facilityMrnCsv);
 
             ResultSet rs = pstmt.executeQuery();
 
@@ -106,12 +110,7 @@ public class DumpUtilityPatient {
 
                 System.out.print(".");
                 
-                if(patient == null || !rs.getString("empi").equals(patient.getEmpi())) {
-                    patient = new Patient();
-                    coPathDump.getPatient().add(patient);
-                    patient.setEmpi(rs.getString("empi"));
-                    patient.setSourceRecord(facilityMrnCsv);
-                }
+                patient.setEmpi(patient.getEmpi() == null ? rs.getString("empi") : patient.getEmpi() + ", " + rs.getString("empi"));
                 
             }
             
