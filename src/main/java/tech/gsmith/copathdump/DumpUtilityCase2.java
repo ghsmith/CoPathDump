@@ -81,7 +81,17 @@ public class DumpUtilityCase2 {
           + "    ) on(ssd.specimen_id = ssw.specimen_id and ssd.worksheet_inst = ssw.ws_inst) "
           + "  ) on(ssw.specimen_id = s.specimen_id and ssw.part_inst = p.part_inst) "
           + "where "
-          + "  p.parttype_id in (select id from c_d_parttype where upper(name) like '%BREAST%') "
+          + "  exists "
+          + "  ( "
+          + "    select "
+          + "      'x' "
+          + "    from "
+          + "      dbo.p_part p_"
+          + "      join dbo.c_d_parttype dp_ on(dp_.id = p_.parttype_id) "
+          + "    where "
+          + "      p_.specimen_id = s.specimen_id "
+          + "      and upper(dp_.name) like '%BREAST%' "
+          + "  ) "
           + "  and s.specnum_year >= 2012 "
           + "order by s.accession_date, 4, 5, 9, cast(ssd.inst as int), 15 "
         );
@@ -168,7 +178,7 @@ public class DumpUtilityCase2 {
                             : null
                         );
                     }
-                    casePart.setCollectionDate(sdfExcel.format(rs.getTimestamp("datetime_taken")));
+                    casePart.setCollectionDate(rs.getTimestamp("datetime_taken") != null ? sdfExcel.format(rs.getTimestamp("datetime_taken")) : null);
                 }
                 
                 if(rs.getString("worksheet") != null) {
