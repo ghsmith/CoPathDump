@@ -43,6 +43,7 @@
                           </xs:element>
                           <xs:element name="PartFinalText" maxOccurs="1" type="xs:string"/>
                         </xs:sequence>
+                        <xs:attribute name="collectionDate" type="xs:string"/>
                         <xs:attribute name="designator" type="xs:string"/>
                         <xs:attribute name="partType" type="xs:string"/>
                         <xs:attribute name="partTypeDisp" type="xs:string"/>
@@ -52,6 +53,7 @@
                     <xs:element name="CaseFinalText" maxOccurs="1" type="xs:string"/>
                   </xs:sequence>
                   <xs:attribute name="accessionNumber" type="xs:string"/>
+                  <xs:attribute name="accessionDate" type="xs:string"/>
                   <xs:attribute name="mrn" type="xs:string"/>
                   <xs:attribute name="mrnCount" type="xs:int"/>
                 </xs:complexType>

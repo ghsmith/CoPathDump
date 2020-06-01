@@ -11,16 +11,17 @@
 <xsl:strip-space elements="*"/>
 
 <xsl:template match="/">
-  <xsl:text>+Pt-SourceNumber, Pt-SourceMrn, Pt-EMPI, Case-MRN, Case-AccessionNumber, Part-Designator, Part-Type, Part-TypeDisp, Part-Descr, Part-FinalText&#xa;</xsl:text>
+  <xsl:text>+, Pt-EMPI, Case-AccessionNumber, Case-AccessionDate, Part-CollectionDate, Part-Designator, Part-Type, Part-TypeDisp, Part-Descr, Part-FinalText&#xa;</xsl:text>
   <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="/CoPathDump/Patient/Case/CasePart">
   <xsl:for-each select=".">
-    <xsl:text>+</xsl:text><xsl:value-of select="../../@sourceRecord"/>
+    <xsl:text>+</xsl:text>
     <xsl:text>,</xsl:text><xsl:value-of select="../../@empi"/>
-    <xsl:text>,</xsl:text><xsl:value-of select="../@mrn"/>
     <xsl:text>,</xsl:text><xsl:value-of select="../@accessionNumber"/>
+    <xsl:text>,</xsl:text><xsl:value-of select="../@accessionDate"/>
+    <xsl:text>,</xsl:text><xsl:value-of select="@collectionDate"/>
     <xsl:text>,</xsl:text><xsl:value-of select="@designator"/>
     <xsl:text>,</xsl:text><xsl:value-of select="@partType"/>
     <xsl:text>,"</xsl:text><xsl:value-of select="translate(@partTypeDisp, '&quot;', '&#182;')"/><xsl:text>"</xsl:text>

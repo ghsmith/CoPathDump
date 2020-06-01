@@ -11,16 +11,17 @@
 <xsl:strip-space elements="*"/>
 
 <xsl:template match="/">
-  <xsl:text>+Pt-SourceNumber, Pt-SourceMrn, Pt-EMPI, Case-MRN, Case-AccessionNumber, Part-Designator, Part-Type, Part-TypeDisp, Part-Descr, SR-Name, SR-NameDisp, SR-Version, Item-Number, Item-Name, Item-NameDisp, Value-Name, Value-NameDisp, Value-FreeText, Value-SNOMEDConceptId&#xa;</xsl:text>
+  <xsl:text>+, Pt-EMPI, Case-AccessionNumber, Case-AccessionDate, Part-CollectionDate, Part-Designator, Part-Type, Part-TypeDisp, Part-Descr, SR-Name, SR-NameDisp, SR-Version, Item-Number, Item-Name, Item-NameDisp, Value-Name, Value-NameDisp, Value-FreeText, Value-SNOMEDConceptId&#xa;</xsl:text>
   <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="/CoPathDump/Patient/Case/CasePart">
   <xsl:for-each select=".">
-    <xsl:text>+</xsl:text><xsl:value-of select="../../@sourceRecord"/>
+    <xsl:text>+</xsl:text>
     <xsl:text>,</xsl:text><xsl:value-of select="../../@empi"/>
-    <xsl:text>,</xsl:text><xsl:value-of select="../@mrn"/>
     <xsl:text>,</xsl:text><xsl:value-of select="../@accessionNumber"/>
+    <xsl:text>,</xsl:text><xsl:value-of select="../@accessionDate"/>
+    <xsl:text>,</xsl:text><xsl:value-of select="@collectionDate"/>
     <xsl:text>,</xsl:text><xsl:value-of select="@designator"/>
     <xsl:text>,</xsl:text><xsl:value-of select="@partType"/>
     <xsl:text>,"</xsl:text><xsl:value-of select="translate(@partTypeDisp, '&quot;', '&#182;')"/><xsl:text>"</xsl:text>
@@ -30,10 +31,11 @@
     </xsl:if>
     <xsl:for-each select="CasePartSynopticReport/CPSRItem/CPSRItemValue">
       <xsl:if test="position() > 1">
-        <xsl:text>+</xsl:text><xsl:value-of select="../../../../../@sourceRecord"/>
+        <xsl:text>+</xsl:text>
         <xsl:text>,</xsl:text><xsl:value-of select="../../../../../@empi"/>
-        <xsl:text>,</xsl:text><xsl:value-of select="../../../../@mrn"/>
         <xsl:text>,</xsl:text><xsl:value-of select="../../../../@accessionNumber"/>
+        <xsl:text>,</xsl:text><xsl:value-of select="../../../../@accessionDate"/>
+        <xsl:text>,</xsl:text><xsl:value-of select="../../../@collectionDate"/>
         <xsl:text>,</xsl:text><xsl:value-of select="../../../@designator"/>
         <xsl:text>,</xsl:text><xsl:value-of select="../../../@partType"/>
         <xsl:text>,"</xsl:text><xsl:value-of select="translate(../../../@partTypeDisp, '&quot;', '&#182;')"/><xsl:text>"</xsl:text>
