@@ -54,8 +54,11 @@
                   </xs:sequence>
                   <xs:attribute name="accessionNumber" type="xs:string"/>
                   <xs:attribute name="accessionDate" type="xs:string"/>
+                  <xs:attribute name="signoutDate" type="xs:string"/>
                   <xs:attribute name="mrn" type="xs:string"/>
                   <xs:attribute name="mrnCount" type="xs:int"/>
+                  <xs:attribute name="listPartType" type="xs:string"/>
+                  <xs:attribute name="listPartTypeDisp" type="xs:string"/>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>

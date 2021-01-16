@@ -11,7 +11,7 @@
 <xsl:strip-space elements="*"/>
 
 <xsl:template match="/">
-  <xsl:text>+, Pt-EMPI, Case-AccessionNumber, Case-AccessionDate, Part-CollectionDate, Part-Designator, Part-Type, Part-TypeDisp, Part-Descr, Part-FinalText&#xa;</xsl:text>
+  <xsl:text>+, Pt-EMPI, Case-AccessionNumber, Case-AccessionDate, Case-SignoutDate, Part-CollectionDate, Part-Designator, Part-Type, Part-TypeDisp, Part-Descr, Part-FinalText&#xa;</xsl:text>
   <xsl:apply-templates/>
 </xsl:template>
 
@@ -21,6 +21,7 @@
     <xsl:text>,</xsl:text><xsl:value-of select="../../@empi"/>
     <xsl:text>,</xsl:text><xsl:value-of select="../@accessionNumber"/>
     <xsl:text>,</xsl:text><xsl:value-of select="../@accessionDate"/>
+    <xsl:text>,</xsl:text><xsl:value-of select="../@signoutDate"/>
     <xsl:text>,</xsl:text><xsl:value-of select="@collectionDate"/>
     <xsl:text>,</xsl:text><xsl:value-of select="@designator"/>
     <xsl:text>,</xsl:text><xsl:value-of select="@partType"/>
