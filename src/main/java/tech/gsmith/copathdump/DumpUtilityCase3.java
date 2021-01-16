@@ -83,6 +83,7 @@ public class DumpUtilityCase3 {
           + "  ) on(ssw.specimen_id = s.specimen_id and ssw.part_inst = p.part_inst) "
           + "where "
           + "  s.patdemog_id in (select patdemog_id from dbo.r_pat_demograph where universal_mednum_stripped = ?) "
+          + "  and s.specnum_year >= 2012 "
           + "order by s.accession_date, 4, 5, 9, cast(ssd.inst as int), 15 "
         );
 
@@ -116,7 +117,7 @@ public class DumpUtilityCase3 {
 
                 if(lastAccessionNo == null || !lastAccessionNo.equals(rs.getString("accession_no"))) {
                     System.out.println();
-                    System.out.print(String.format("%5d [%s - %s]", ++count, recNo, rs.getString("accession_no")));
+                    System.out.print(String.format("%5d [%s/%s/%s]", ++count, recNo, empi, rs.getString("accession_no")));
                 }
                 lastAccessionNo = rs.getString("accession_no");
                 
@@ -261,7 +262,7 @@ public class DumpUtilityCase3 {
             JAXBContext jc = JAXBContext.newInstance(new Class[] {CoPathDump.class});
             Marshaller m = jc.createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, new Boolean(true));
-            m.marshal(coPathDump, new FileOutputStream(new File("copathdump.xml")));
+            m.marshal(coPathDump, new FileOutputStream(new File("copathdump-" + args[1] + ".xml")));
         }
 
     }
