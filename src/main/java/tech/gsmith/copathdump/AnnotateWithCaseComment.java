@@ -39,26 +39,40 @@ public class AnnotateWithCaseComment {
         {
             JAXBContext jc = JAXBContext.newInstance(new Class[] { CoPathDump.class });
             Unmarshaller unmarshaller = jc.createUnmarshaller();
-            coPathDump = (CoPathDump)unmarshaller.unmarshal(new FileInputStream(args[0]));
+            coPathDump = (CoPathDump)unmarshaller.unmarshal(new FileInputStream(args[1]));
         }
-        System.out.println(coPathDump.getPatient().size() + "patients loaded");
+
+        System.out.println(coPathDump.getPatient().size() + " patients loaded");
+        int caseCount = 0;
+        for(CoPathDump.Patient patient : coPathDump.getPatient()) {
+            for(CoPathDump.Patient.Case case_ : patient.getCase()) {
+                caseCount++;
+            }
+        }
         
         coPathDump.setVersion("0.4"); // update version to reflect addition of CaseComment
         
         int count = 0;
         
         for(CoPathDump.Patient patient : coPathDump.getPatient()) {
-        
+            
             for(CoPathDump.Patient.Case case_ : patient.getCase()) {
-                
-                System.out.println(String.format("%6d. %s", ++count, case_.getAccessionNumber()));
+                System.out.println(String.format("%6d/%6d. %s", ++count, caseCount, case_.getAccessionNumber()));
                 
                 pstmt.clearParameters();
                 pstmt.setString(1, case_.getAccessionNumber());
                 ResultSet rs = pstmt.executeQuery();
-                
-                while(rs.next()) {
-                    case_.setCaseComment((case_.getCaseComment() != null ? "\n\n" : "") + rs.getString("comment_text"));
+                rs.next();
+
+                if(rs.getString("comment_text") != null) {
+                    case_.setCaseComment(
+                        rs.getString("comment_text") != null
+                        ? rs.getString("comment_text")
+                            .replace("\u0008", "") // there are ASCII 08 (backspace?) characters in this column
+                            .replace("\r", "")
+                            .replaceAll("\\s+$","")
+                        : null
+                    );
                 }
                 
             }
@@ -93,7 +107,7 @@ public class AnnotateWithCaseComment {
             JAXBContext jc = JAXBContext.newInstance(new Class[] {CoPathDump.class});
             Marshaller m = jc.createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, new Boolean(true));
-            m.marshal(coPathDump, new FileOutputStream(new File(args[0].replace(".xml", "with_comment.xml"))));
+            m.marshal(coPathDump, new FileOutputStream(new File(args[1].replace(".xml", ".with_comment.xml"))));
         }
 
     }
