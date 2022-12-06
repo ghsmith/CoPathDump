@@ -52,6 +52,21 @@
                     </xs:element>
                     <xs:element name="CaseFinalText" maxOccurs="1" type="xs:string"/>
                     <xs:element name="CaseComment" maxOccurs="1" type="xs:string"/>
+                    <xs:element name="Procedures" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="Procedure" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="procedureInterp" maxOccurs="1" type="xs:string"/>
+                                <xs:element name="procedureResult" maxOccurs="1" type="xs:string"/>
+                              </xs:sequence>
+                              <xs:attribute name="procedureName" type="xs:string"/>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
                   </xs:sequence>
                   <xs:attribute name="accessionNumber" type="xs:string"/>
                   <xs:attribute name="accessionDate" type="xs:string"/>
